@@ -1,12 +1,14 @@
 import os
-import json
 
 files = os.listdir("./db")
     
 entries = []
 
-def gen_entry(file):
-    tokens = file.read().replace(",", "").replace("?","").replace(".","").split(" ")
+def gen_entry(file=None, input=None):
+    if file is not None:
+        tokens = file.read().replace(",", "").replace("?","").replace(".","").split(" ")
+    else:
+        tokens = str(input).split(" ")
     items = dict()
 
     for t in tokens:
@@ -16,11 +18,15 @@ def gen_entry(file):
             items.update({f"{name}": 1})
         else:
             items.update({f"{name}": item+1})
-            
-    entries.append(dict(
-        items=items,
-        meta=file.name
-    ))
+    if file is not None:    
+        entries.append(dict(
+            items=items,
+            meta=file.name
+        ))
+    else:
+        entries.append(dict(
+            items=items,
+        ))
 
 for f in files:
     filename = os.path.join("./db", f)
@@ -40,9 +46,9 @@ for i in entries:
 
 indexes.sort()
 
-def plot():
+def plot(ent):
     final = []
-    for i in entries:
+    for i in ent:
         d = dict()
         for j in i["items"].keys():
             index = indexes.index(j.lower())
@@ -53,8 +59,9 @@ def plot():
     
     return final
 
-
+# print(plot(entries))
 # SEARCH
 inp = input("Search: ")
 # pegar a string e ver se tem o termo no index. se tiver o termo add numa array pra buscar em um or se tem algum dos itens da array em um plot, aí depois retorna o plot
 
+print(entries)
